@@ -1,0 +1,27 @@
+services:
+  ai-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-manager
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ai_manager_data:/data
+      - ./templates:/app/templates:ro
+      - ./static:/app/static:ro
+      - ./database:/app/database:ro
+      - ./ssh:/run/secrets:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  ai_manager_data:
+
